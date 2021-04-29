@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Expense Tracker</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="add_record">Add</string>
+    <string name="view_records">View All</string>
+    <string name="update_record">Update By ID</string>
+    <string name="delete_record">Delete By ID</string>
+
+</resources>
