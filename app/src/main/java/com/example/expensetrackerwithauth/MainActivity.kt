@@ -9,9 +9,12 @@ import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
+import com.example.expensetrackerwithauth.fragments.*
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -23,11 +26,6 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
 
-        //
-        findViewById<FloatingActionButton>(R.id.fab).setOnClickListener { view ->
-            Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
-        }
 
         // #### Authentication using FirebaseAuth #####
 
@@ -39,17 +37,51 @@ class MainActivity : AppCompatActivity() {
             startRegisterActivity()
         }
         else {
-            person_name.text = currentUser.displayName
+
+
+            val homeFragment = HomeFragment()
+            val moneyInFragment = MoneyInFragment()
+            val moneyOutFragment = MoneyOutFragment()
+            val settingsFragment = SettingsFragment()
+            val stockFragment = StockFragment()
+
+            makeCurrentFragment(homeFragment)
+
+            bottom_navigation.setOnNavigationItemSelectedListener {
+                // when you click on the fragment in navigation it changes to the fragment you clicked on
+                when (it.itemId){
+                    R.id.ic_home -> makeCurrentFragment(homeFragment)
+                    R.id.ic_money_in -> makeCurrentFragment(moneyInFragment)
+                    R.id.ic_money_out -> makeCurrentFragment(moneyOutFragment)
+                    R.id.ic_baseline_settings_24 -> makeCurrentFragment(settingsFragment)
+                    R.id.ic_stock -> makeCurrentFragment(stockFragment)
+                }
+                true
+            }
+
+
+
+        /*    person_name.text = currentUser.displayName
             person_email.text = currentUser.email
             Glide.with(this)
                 .load(currentUser.photoUrl)
                 .placeholder(R.drawable.ic_baseline_person_24)
                 .circleCrop()
-                .into(person_image)
+                .into(person_image)*/
         }
 
 
     }
+
+    // for navigation bar
+    private fun makeCurrentFragment(fragment: Fragment) =
+        supportFragmentManager.beginTransaction().apply {
+            replace(R.id.fl_wrapper, fragment)
+            commit()
+        }
+
+
+
 
     // An helper function to start our RegisterActivity
     private fun startRegisterActivity(){

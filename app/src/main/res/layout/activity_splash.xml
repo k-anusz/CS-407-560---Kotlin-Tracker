@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#64B5F6"
+    android:background="#4CAF50"
     tools:context=".SplashActivity">
 
     <ImageView
@@ -16,5 +16,5 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_baseline_cake_24" />
+        app:srcCompat="@drawable/ic_money_in" />
 </androidx.constraintlayout.widget.ConstraintLayout>

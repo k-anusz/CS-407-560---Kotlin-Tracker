@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/ic_home"
+        android:icon="@drawable/ic_home"
+        android:title="Home"/>
+
+    <item
+        android:id="@+id/ic_money_in"
+        android:icon="@drawable/ic_money_in"
+        android:title="Money In"/>
+
+    <item
+        android:id="@+id/ic_money_out"
+        android:icon="@drawable/ic_money_out"
+        android:title="Money Out"/>
+
+    <item
+        android:id="@+id/ic_stock"
+        android:icon="@drawable/ic_stock"
+        android:title="Stock"/>
+
+    <item
+        android:id="@+id/ic_baseline_settings_24"
+        android:icon="@drawable/ic_baseline_settings_24"
+        android:title="Settings"/>
+
+</menu>
