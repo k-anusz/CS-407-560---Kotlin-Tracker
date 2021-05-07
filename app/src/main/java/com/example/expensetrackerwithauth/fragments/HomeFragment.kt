@@ -40,10 +40,28 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+
+        // Show the data on the screen
+        /*db.collection("users")
+                .get()*/
+
+        // val currentUser = FirebaseAuth.getInstance().currentUser
+
+        // Show details
+        // view.testingTextView.text = currentUser.email
+        //view?.testingTextView?.text = name
+
+        return view
+    }
+
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         updateAllBalances()
 
         /*
-            Expandable Action button code
+                Expandable Action button code
         */
         view.fab.setOnClickListener { view ->
             onAddButtonClicked()
@@ -57,24 +75,123 @@ class HomeFragment : Fragment() {
             showDialogSubtract()
         }
         view.viewAllButton.setOnClickListener { view ->
-            viewAllDataButtonWithCustomClass()
+            //viewAllDataButtonWithCustomClass(5)
             updateAllBalances()
         }
 
 
-        // Show the data on the screen
-        /*db.collection("users")
-                .get()*/
+        //val exampleList = viewAllDataButtonWithCustomClass(6)
+        val exampleList = generateDummyList()
+
+        recycler_view.adapter = ExampleAdapter(exampleList)
+        recycler_view.layoutManager = LinearLayoutManager(activity)
 
 
-        // val currentUser = FirebaseAuth.getInstance().currentUser
-
-        // Show details
-        // view.testingTextView.text = currentUser.email
-        //view?.testingTextView?.text = name
-
-        return view
     }
+
+
+
+/*    private fun generateDummyList(): List<UserTransactions> {
+        val currentUser = FirebaseAuth.getInstance().currentUser.displayName
+        //val list = ArrayList<UserTransactions>()
+        val list = mutableListOf<UserTransactions>()
+
+*//*
+        // Get data using addOnSuccessListener
+        db.collection("$currentUser")
+                .orderBy("id")
+                .get()
+                .addOnSuccessListener { documents ->
+                    // Turn your document(s) to Contact object
+                    val userTransactionsObject = documents.toObjects<UserTransactions>()
+
+                    for (userTransactions in userTransactionsObject) {
+
+                        val item = UserTransactions(1, userTransactions.addedBalance, userTransactions.subtractedBalance,
+                                userTransactions.userBalance,userTransactions.userNote,userTransactions.userType)
+                        list += item
+                    }
+                }
+        return list*//*
+
+
+
+        // Get data using addOnSuccessListener
+        db.collection("$currentUser")
+                .orderBy("id")
+                .get()
+                .addOnSuccessListener { documents ->
+                    // Turn your document(s) to Contact object
+                    val userTransactionsObject = documents.toObjects<UserTransactions>()
+
+                    for (userTransactions in userTransactionsObject) {
+
+                        val item = UserTransactions(1, userTransactions.addedBalance, userTransactions.subtractedBalance,
+                                userTransactions.userBalance,userTransactions.userNote,userTransactions.userType)
+                        list += item
+
+                    }
+                }
+        return list
+
+
+
+      *//*
+                        val item = UserTransactions(1, false, true,
+                                3, "hi", "yo")
+                        list += item
+        return list
+*//*
+
+    }*/
+
+
+
+
+
+
+
+
+
+   private fun generateDummyList(): List<UserTransactions> {
+        val currentUser = FirebaseAuth.getInstance().currentUser.displayName
+        //val list = ArrayList<UserTransactions>()
+        val list = mutableListOf<UserTransactions>()
+
+
+        // Get data using addOnSuccessListener
+        db.collection("$currentUser")
+                .orderBy("id")
+                .get()
+                .addOnSuccessListener { documents ->
+                    // Turn your document(s) to Contact object
+                    val userTransactionsObject = documents.toObjects<UserTransactions>()
+
+                    for (userTransactions in userTransactionsObject) {
+
+                        val item = UserTransactions(1, userTransactions.addedBalance, userTransactions.subtractedBalance,
+                                userTransactions.userBalance,userTransactions.userNote,userTransactions.userType)
+                        list += item
+                    }
+                }
+        return list
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
     private fun showDialogIncome() {
@@ -119,6 +236,8 @@ class HomeFragment : Fragment() {
 
             // Add data
             userTransactions.document(id).set(transaction)
+
+            updateAllBalances()
         }
         // cancel button
         mDialogView.cancelButtonIncome.setOnClickListener {
@@ -168,6 +287,8 @@ class HomeFragment : Fragment() {
 
             // Add data
             userTransactions.document(id).set(transaction)
+
+            updateAllBalances()
         }
         // cancel button
         mDialogView.cancelButtonIncome.setOnClickListener {
@@ -177,11 +298,14 @@ class HomeFragment : Fragment() {
     }
 
 
-    // Alternative-2 --> Uses custom objects (i.e., Contact data class)
+    // Uses custom objects (i.e., UserTransactions data class)
     // Read all the records from the database
-    private fun viewAllDataButtonWithCustomClass() {
+    private fun viewAllDataButtonWithCustomClass(size: Int): List<UserTransactions> {
 
         val currentUser = FirebaseAuth.getInstance().currentUser.displayName
+
+        val list = ArrayList<UserTransactions>()
+
 
 
         // Get data using addOnSuccessListener
@@ -192,6 +316,9 @@ class HomeFragment : Fragment() {
 
                 val buffer = StringBuffer()
 
+
+
+
                 // Turn your document(s) to Contact object
                 val userTransactionsObject = documents.toObjects<UserTransactions>()
 
@@ -200,21 +327,28 @@ class HomeFragment : Fragment() {
                     //Log.d(TAG, "contact: ${contact}")
 
                     // Create a string buffer (i.e., concatenate all the fields into one string)
-                    buffer.append("ID : ${userTransactions.id}" + "\n")
+             /*       buffer.append("ID : ${userTransactions.id}" + "\n")
                     buffer.append("added Balance : ${userTransactions.addedBalance}" + "\n")
                     buffer.append("subtracted Balance :  ${userTransactions.subtractedBalance}" + "\n")
                     buffer.append("user Balance : ${userTransactions.userBalance}" + "\n")
                     buffer.append("user Note :  ${userTransactions.userNote}" + "\n")
-                    buffer.append("user Type :  ${userTransactions.userType}" + "\n\n")
+                    buffer.append("user Type :  ${userTransactions.userType}" + "\n\n")*/
+
+
+                    val item = UserTransactions(1, userTransactions.addedBalance, userTransactions.subtractedBalance,
+                            userTransactions.userBalance,userTransactions.userNote,userTransactions.userType)
+                    list += item
                 }
 
+
                 // show all the records as a string in a dialog
-                showDialog("Data Listing", buffer.toString())
+                //showDialog("Data Listing", buffer.toString())
             }
             .addOnFailureListener {
                 //Log.d(TAG, "Error getting documents")
                 //showDialog("Error", "Error getting documents")
             }
+        return list
     }
 
     /**
