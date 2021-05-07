@@ -39,6 +39,7 @@ dependencies {
 
 
     implementation 'com.google.firebase:firebase-firestore:22.1.2'
+    implementation "com.google.firebase:firebase-firestore-ktx:21.4.2"
 
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:27.1.0')
