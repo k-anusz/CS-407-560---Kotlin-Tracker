@@ -40,6 +40,24 @@ class HomeFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
+
+        // Show the data on the screen
+        /*db.collection("users")
+                .get()*/
+
+
+        // val currentUser = FirebaseAuth.getInstance().currentUser
+
+        // Show details
+        // view.testingTextView.text = currentUser.email
+        //view?.testingTextView?.text = name
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         updateAllBalances()
 
         /*
@@ -60,20 +78,6 @@ class HomeFragment : Fragment() {
             viewAllDataButtonWithCustomClass()
             updateAllBalances()
         }
-
-
-        // Show the data on the screen
-        /*db.collection("users")
-                .get()*/
-
-
-        // val currentUser = FirebaseAuth.getInstance().currentUser
-
-        // Show details
-        // view.testingTextView.text = currentUser.email
-        //view?.testingTextView?.text = name
-
-        return view
     }
 
 
@@ -119,6 +123,7 @@ class HomeFragment : Fragment() {
 
             // Add data
             userTransactions.document(id).set(transaction)
+            updateAllBalances()
         }
         // cancel button
         mDialogView.cancelButtonIncome.setOnClickListener {
@@ -168,6 +173,7 @@ class HomeFragment : Fragment() {
 
             // Add data
             userTransactions.document(id).set(transaction)
+            updateAllBalances()
         }
         // cancel button
         mDialogView.cancelButtonIncome.setOnClickListener {
