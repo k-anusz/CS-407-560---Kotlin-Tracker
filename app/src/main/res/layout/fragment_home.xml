@@ -124,8 +124,11 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.666"
-            tools:listitem="@layout/single_transaction" />/>
+            tools:listitem="@layout/single_transaction" /><![CDATA[
+
+        />
 
 
+    ]]>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
