@@ -1,5 +1,6 @@
 package com.example.expensetrackerwithauth
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -45,7 +46,13 @@ class StockAdapter(private val stocks: ArrayList<Stock>) : RecyclerView.Adapter<
         holder.low.text = "${stock.low}"
         holder.price.text = "${stock.price}"
         holder.change.text = "${stock.change}"
-
+        if (stock.change.contains('-'))
+        {
+            holder.change.setTextColor(Color.parseColor(("#FF0000")))
+        }
+        else {
+            holder.change.setTextColor(Color.parseColor(("#00ff00")))
+        }
     }
 
     override fun getItemCount(): Int {
