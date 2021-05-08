@@ -12,7 +12,10 @@ import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerwithauth.R
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
@@ -34,6 +37,12 @@ class HomeFragment : Fragment() {
     private var clicked = false
 
     private val db = Firebase.firestore
+
+    var userAdapter: UserAdapter? = null
+
+    val currentUser = FirebaseAuth.getInstance().currentUser.displayName
+
+    private val collectionReference:CollectionReference = db.collection("$currentUser")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -78,8 +87,35 @@ class HomeFragment : Fragment() {
             viewAllDataButtonWithCustomClass()
             updateAllBalances()
         }
+
+
+
+        setUpRecyclerview()
     }
 
+    private fun setUpRecyclerview() {
+
+        val query : Query = collectionReference
+        val firestoreRecyclerOptions : FirestoreRecyclerOptions<UserTransactions> = FirestoreRecyclerOptions.Builder<UserTransactions>()
+            .setQuery(query, UserTransactions::class.java)
+            .build()
+
+            userAdapter = UserAdapter(firestoreRecyclerOptions)
+
+            recycler_view.layoutManager = LinearLayoutManager(activity)
+            recycler_view.adapter = userAdapter
+    }
+
+
+    override fun onStart() {
+        super.onStart()
+        userAdapter!!.startListening()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        userAdapter!!.stopListening()
+    }
 
     private fun showDialogIncome() {
         // inflate the dialog with custom view
