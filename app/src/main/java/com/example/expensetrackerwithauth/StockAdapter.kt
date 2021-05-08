@@ -40,11 +40,13 @@ class StockAdapter(private val stocks: ArrayList<Stock>) : RecyclerView.Adapter<
 
         val stock = stocks[position]
 
+
+
         holder.symbol.text = "${stock.symbol}"
-        holder.open.text = "${stock.open}"
-        holder.high.text = "${stock.high}"
-        holder.low.text = "${stock.low}"
-        holder.price.text = "${stock.price}"
+        holder.open.text = "${number2digits(stock.open)}"
+        holder.high.text =  "${number2digits(stock.high)}"
+        holder.low.text =  "${number2digits(stock.low)}"
+        holder.price.text =  "${number2digits(stock.price)}"
         holder.change.text = "${stock.change}"
         if (stock.change.contains('-'))
         {
@@ -58,5 +60,11 @@ class StockAdapter(private val stocks: ArrayList<Stock>) : RecyclerView.Adapter<
     override fun getItemCount(): Int {
         // Return the size of your dataset (invoked by the layout manager)
         return stocks.size
+    }
+
+    fun number2digits(number: Double): Double {
+        val number2digits: Double = String.format("%.2f", number).toDouble()
+
+        return number2digits
     }
 }
