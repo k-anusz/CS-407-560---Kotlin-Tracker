@@ -52,12 +52,13 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/stock_portfolio"
-        android:layout_width="416dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_width="420dp"
+        android:layout_height="450dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/add_stock_button"
+        app:layout_constraintVertical_bias="0.0"
         tools:listitem="@layout/row_item" />
 
 
