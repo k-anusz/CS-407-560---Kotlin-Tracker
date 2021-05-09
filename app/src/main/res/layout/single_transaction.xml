@@ -40,12 +40,12 @@
             app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/single_note_Amount"
+            android:id="@+id/single_description"
             android:layout_width="250dp"
             android:layout_height="27dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="30dp"
-            android:text="Note:"
+            android:text="Description:"
             android:textAlignment="viewStart"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -72,12 +72,12 @@
             app:layout_constraintVertical_bias="0.653" />
 
         <TextView
-            android:id="@+id/single_type_Amount"
+            android:id="@+id/single_title"
             android:layout_width="220dp"
             android:layout_height="31dp"
             android:layout_marginLeft="10dp"
             android:layout_marginTop="5dp"
-            android:text="Type:"
+            android:text="Title:"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
