@@ -18,7 +18,6 @@ class UserAdapterPositiveTransactionsOnly(options: FirestoreRecyclerOptions<User
     FirestoreRecyclerAdapter<UserTransactions, UserAdapterPositiveTransactionsOnly.UserAdapterVH>(options) {
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserAdapterVH {
         return UserAdapterVH(LayoutInflater.from(parent.context).inflate(R.layout.single_transaction, parent, false))
     }
@@ -30,23 +29,21 @@ class UserAdapterPositiveTransactionsOnly(options: FirestoreRecyclerOptions<User
             holder.singleItemAmount.text = "+ $" + model.userBalance.toString()
             // will change the background color of the card view to green
             holder.mCardView.setCardBackgroundColor(Color.parseColor("#83c985"))
-
             holder.singleNoteAmount.text = model.userNote
             holder.singleTypeAmount.text = model.userType
-
+            holder.transactionID.text = "ID: " + model.id.toString()
         }
         // makes negative transactions invisible
         if (model.subtractedBalance == true) {
             holder.mCardView.isVisible = false
         }
     }
-
     class UserAdapterVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var singleItemAmount = itemView.single_item_Amount
         var singleNoteAmount = itemView.single_note_Amount
         var singleTypeAmount = itemView.single_type_Amount
+        var transactionID = itemView.single_ID
         var mCardView = itemView.cardview
-
     }
 }
 

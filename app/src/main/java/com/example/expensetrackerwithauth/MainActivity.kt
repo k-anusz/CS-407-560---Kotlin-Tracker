@@ -3,19 +3,16 @@ package com.example.expensetrackerwithauth
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.snackbar.Snackbar
 import androidx.appcompat.app.AppCompatActivity
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.Glide
 import com.example.expensetrackerwithauth.fragments.*
 import com.firebase.ui.auth.AuthUI
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -25,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         setSupportActionBar(findViewById(R.id.toolbar))
-
 
         // #### Authentication using FirebaseAuth #####
 
@@ -37,8 +33,6 @@ class MainActivity : AppCompatActivity() {
             startRegisterActivity()
         }
         else {
-
-
             val homeFragment = HomeFragment()
             val moneyInFragment = MoneyInFragment()
             val moneyOutFragment = MoneyOutFragment()
@@ -58,19 +52,7 @@ class MainActivity : AppCompatActivity() {
                 }
                 true
             }
-
-
-
-        /*    person_name.text = currentUser.displayName
-            person_email.text = currentUser.email
-            Glide.with(this)
-                .load(currentUser.photoUrl)
-                .placeholder(R.drawable.ic_baseline_person_24)
-                .circleCrop()
-                .into(person_image)*/
         }
-
-
     }
 
     // for navigation bar
@@ -79,9 +61,6 @@ class MainActivity : AppCompatActivity() {
             replace(R.id.fl_wrapper, fragment)
             commit()
         }
-
-
-
 
     // An helper function to start our RegisterActivity
     private fun startRegisterActivity(){
@@ -125,5 +104,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
 }
+
+

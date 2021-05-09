@@ -18,6 +18,7 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.delete_input_dialog.*
 import kotlinx.android.synthetic.main.delete_input_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
@@ -66,24 +67,13 @@ class HomeFragment : Fragment() {
 
     private val collectionReference: CollectionReference = db.collection("$currentUser")
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
-
-
-        // Show the data on the screen
-        /*db.collection("users")
-                .get()*/
-
-
-        // val currentUser = FirebaseAuth.getInstance().currentUser
-
-        // Show details
-        // view.testingTextView.text = currentUser.email
-        //view?.testingTextView?.text = name
 
         return view
     }
@@ -100,18 +90,17 @@ class HomeFragment : Fragment() {
             onAddButtonClicked()
         }
         view.addButton.setOnClickListener { view ->
-            Toast.makeText(activity, "Add button Clicked", Toast.LENGTH_SHORT).show()
+            showToast("Add button Clicked")
             showDialogIncome()
         }
         view.subtractButton.setOnClickListener { view ->
-            Toast.makeText(activity, "Subtract button Clicked", Toast.LENGTH_SHORT).show()
+            showToast("Subtract button Clicked")
             showDialogSubtract()
         }
         view.deleteTransactionButton.setOnClickListener { view ->
-            Toast.makeText(activity, "Delete button Clicked", Toast.LENGTH_SHORT).show()
+            showToast("Delete button Clicked")
             showDialogDeleteTransaction()
         }
-
         setUpRecyclerview()
     }
 
@@ -129,8 +118,6 @@ class HomeFragment : Fragment() {
         recycler_view.adapter = userAdapter
     }
 
-
-
     // Delete a contact based on its id
     private fun deleteButton(userEnteredTransactionForDeletion: Int) {
 
@@ -145,7 +132,7 @@ class HomeFragment : Fragment() {
             collectionReference
                 .whereEqualTo("id", usEnteredId.toInt())
                 .get()
-                .addOnSuccessListener {documents->
+                .addOnSuccessListener { documents ->
 
                     for (document in documents) {
                         if (document != null) {
@@ -163,10 +150,9 @@ class HomeFragment : Fragment() {
                     }
                 }
         } else {
-            //showToast("Enter an id")
+            showToast("Enter an id")
         }
     }
-
 
     override fun onStart() {
         super.onStart()
@@ -230,7 +216,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-
     private fun showDialogSubtract() {
         // inflate the dialog with custom view
         val mDialogView = LayoutInflater.from(activity).inflate(R.layout.income_input_dialog, null)
@@ -245,34 +230,43 @@ class HomeFragment : Fragment() {
             // dissmiss dialog
             mAlertDialog.dismiss()
             // get text from EditTexts of custom layout
-            val userIncomeForSubtracted = mDialogView.dialogAmountInput.text.toString().toInt()
-            val userTypeInputedForSubtracted = mDialogView.dialogTitleInput.text.toString()
-            val userNoteInputedForSubtracted = mDialogView.dialogDescriptionInput.text.toString()
-            val userIDInputed = mDialogView.dialogIDInput.text.toString().toInt()
+            val userIncomeForSubtracted = mDialogView.dialogAmountInput.text
+            val userTypeInputedForSubtracted = mDialogView.dialogTitleInput.text
+            val userNoteInputedForSubtracted = mDialogView.dialogDescriptionInput.text
+            val userIDInputed = mDialogView.dialogIDInput.text
 
-            // do something with the data
-            val currentUser = FirebaseAuth.getInstance().currentUser.displayName
+            // Make's sure all input fields have an input and stops the app from crashing
+            if (userIncomeForSubtracted.isNotEmpty() && userIDInputed.isNotEmpty() &&
+                userNoteInputedForSubtracted.isNotEmpty() && userTypeInputedForSubtracted.isNotEmpty() ) {
 
-            // Get an instance of our collection
-            val userTransactions = db.collection("$currentUser")
+                // do something with the data
+                val currentUser = FirebaseAuth.getInstance().currentUser.displayName
 
-            // Custom class is used to represent your document
-            // it is recommended to have a custom class to represent the data
-            val transaction = UserTransactions(
-                id = userIDInputed,
-                addedBalance = false,
-                subtractedBalance = true,
-                userBalance = userIncomeForSubtracted,
-                userNote = userNoteInputedForSubtracted,
-                userType = userTypeInputedForSubtracted,
-            )
+                // Get an instance of our collection
+                val userTransactions = db.collection("$currentUser")
 
-            // Get an auto generated id for a document that you want to insert
-            val id = userTransactions.document().id
+                // Custom class is used to represent your document
+                // it is recommended to have a custom class to represent the data
+                val transaction = UserTransactions(
+                    id = userIDInputed.toString().toInt(),
+                    addedBalance = false,
+                    subtractedBalance = true,
+                    userBalance = userIncomeForSubtracted.toString().toInt(),
+                    userNote = userNoteInputedForSubtracted.toString(),
+                    userType = userTypeInputedForSubtracted.toString(),
+                )
 
-            // Add data
-            userTransactions.document(id).set(transaction)
-            updateAllBalances()
+                // Get an auto generated id for a document that you want to insert
+                val id = userTransactions.document().id
+
+                // Add data
+                userTransactions.document(id).set(transaction)
+                updateAllBalances()
+
+            }
+            else{
+                showToast("Please enter all fields")
+            }
         }
         // cancel button
         mDialogView.cancelButtonIncome.setOnClickListener {
@@ -295,18 +289,23 @@ class HomeFragment : Fragment() {
             // dissmiss dialog
             mAlertDialog.dismiss()
             // get text from EditTexts of custom layout
-            val userEnteredTransactionForDeletion = mDialogView.dialogDeleteInput.text.toString().toInt()
+            val userEnteredTransactionForDeletion =
+                mDialogView.dialogDeleteInput.text
 
-            // calls the delete method`
-            deleteButton(userEnteredTransactionForDeletion)
-        }
+            if (userEnteredTransactionForDeletion.isNotEmpty()) {
+                // calls the delete method
+                deleteButton(userEnteredTransactionForDeletion.toString().toInt())
+            }
+            else{
+                showToast("Please enter an ID")
+            }
+    }
         // cancel button
         mDialogView.cancelButtonIncome.setOnClickListener {
             // dismiss dialog
             mAlertDialog.dismiss()
         }
     }
-
 
     /**
      * show an alert dialog with data dialog.
@@ -342,7 +341,6 @@ class HomeFragment : Fragment() {
                     if (userTransactions.subtractedBalance == true) {
                         usersTotalSpentBalance += userTransactions.userBalance!!
                     }
-
                 }
                 // Find out the total balance
                 usersTotalBalance = usersTotalAddedBalance - usersTotalSpentBalance
@@ -356,7 +354,6 @@ class HomeFragment : Fragment() {
                 showDialog("Error", "Error getting documents")
             }
     }
-
 
     /*
       Expandable Action button code
@@ -407,6 +404,12 @@ class HomeFragment : Fragment() {
             subtractButton.isClickable = false
             deleteTransactionButton.isClickable = false
         }
+    }
+    /**
+     * A helper function to show Toast message
+     */
+    private fun showToast(text: String){
+        Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
     }
 }
 

@@ -16,9 +16,10 @@ class UserAdapter(options: FirestoreRecyclerOptions<UserTransactions>) :
     FirestoreRecyclerAdapter<UserTransactions, UserAdapter.UserAdapterVH>(options) {
 
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): UserAdapterVH {
-        return UserAdapterVH(LayoutInflater.from(parent.context).inflate(R.layout.single_transaction, parent, false))
+        return UserAdapterVH(
+            LayoutInflater.from(parent.context).inflate(R.layout.single_transaction, parent, false)
+        )
     }
 
     @SuppressLint("SetTextI18n")
@@ -28,7 +29,6 @@ class UserAdapter(options: FirestoreRecyclerOptions<UserTransactions>) :
             holder.singleItemAmount.text = "+ $" + model.userBalance.toString()
             // will change the background color of the card view to green
             holder.mCardView.setCardBackgroundColor(Color.parseColor("#83c985"))
-
         }
         // for negative transactions
         if (model.subtractedBalance == true) {

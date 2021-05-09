@@ -1,7 +1,6 @@
 package com.example.expensetrackerwithauth.fragments
 
 
-
 data class UserTransactions(
         var id: Int? = null,
         var addedBalance: Boolean? = null,

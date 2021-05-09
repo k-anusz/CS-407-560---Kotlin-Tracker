@@ -26,10 +26,12 @@ class MoneyOutFragment : Fragment() {
 
     val currentUser = FirebaseAuth.getInstance().currentUser.displayName
 
-    private val collectionReference:CollectionReference = db.collection("$currentUser")
+    private val collectionReference: CollectionReference = db.collection("$currentUser")
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_money_out, container, false)
 
@@ -45,10 +47,11 @@ class MoneyOutFragment : Fragment() {
 
     private fun setUpRecyclerview() {
 
-        val query : Query = collectionReference
-        val firestoreRecyclerOptions : FirestoreRecyclerOptions<UserTransactions> = FirestoreRecyclerOptions.Builder<UserTransactions>()
-            .setQuery(query, UserTransactions::class.java)
-            .build()
+        val query: Query = collectionReference
+        val firestoreRecyclerOptions: FirestoreRecyclerOptions<UserTransactions> =
+            FirestoreRecyclerOptions.Builder<UserTransactions>()
+                .setQuery(query, UserTransactions::class.java)
+                .build()
 
         userAdapter = UserAdapterNegativeTransactionsOnly(firestoreRecyclerOptions)
 
