@@ -176,13 +176,26 @@ class StockFragment : Fragment() {
 
                         val body = response.body()
 
-                        if (body == null) {
-                            Log.w(TAG, "Valid response was not received")
-                            return
+                        if (body != null) {
+                            if (body.Stock.symbol == null) {
+                                Log.w(TAG, "Valid response was not received")
+                                val builder = AlertDialog.Builder(view.rootView.context)
+                                builder.setTitle("Stock Ticker Symbol Does NOT Exist")
+                                builder.setMessage("Please enter a valid symbol and retry.")
+                                // Set an icon, optional
+                                builder.setIcon(android.R.drawable.ic_delete)
+                                // Set the button actions (i.e. listeners), optional
+                                builder.setPositiveButton("OKAY") { dialog, which ->
+                                    dialog.dismiss()
+                                }
+                                // create the dialog and show it
+                                val dialog = builder.create()
+                                dialog.show()
+                                return
+                            }
                         }
-
                         // Update the adapter with the new data
-                        stockList.add(body.Stock)
+                        stockList.add(body!!.Stock)
                         adapter.notifyDataSetChanged()
                     }
                 })
