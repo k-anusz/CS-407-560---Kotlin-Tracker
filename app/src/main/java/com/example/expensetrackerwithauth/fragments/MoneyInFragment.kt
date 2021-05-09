@@ -19,12 +19,9 @@ import kotlinx.android.synthetic.main.fragment_money_in.*
 class MoneyInFragment : Fragment() {
 
     private val db = Firebase.firestore
-
-    var userAdapter: UserAdapterPositiveTransactionsOnly? = null
-
-    val currentUser = FirebaseAuth.getInstance().currentUser.displayName
-
-    private val collectionReference: CollectionReference = db.collection("$currentUser")
+    private var userAdapter: UserAdapterPositiveTransactionsOnly? = null
+    private val currentUID = FirebaseAuth.getInstance().currentUser.uid
+    private val collectionReference: CollectionReference = db.collection("$currentUID")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,12 +63,6 @@ class MoneyInFragment : Fragment() {
         userAdapter!!.stopListening()
     }
 }
-
-
-
-
-
-
 
 
 

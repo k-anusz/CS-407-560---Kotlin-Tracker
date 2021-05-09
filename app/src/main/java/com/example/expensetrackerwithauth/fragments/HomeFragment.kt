@@ -57,10 +57,11 @@ class HomeFragment : Fragment() {
 
     // acts as an on / off switch for expandable action button animation
     private var clicked = false
+
     private val db = Firebase.firestore
     private var userAdapter: UserAdapter? = null
-    val currentUser = FirebaseAuth.getInstance().currentUser.displayName
-    private val collectionReference: CollectionReference = db.collection("$currentUser")
+    private val currentUID = FirebaseAuth.getInstance().currentUser.uid
+    private val collectionReference: CollectionReference = db.collection("$currentUID")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -184,8 +185,8 @@ class HomeFragment : Fragment() {
             if (userIncomeInputed.isNotEmpty() && userTitleInputed.isNotEmpty() && userDescriptionInputed.isNotEmpty() && userIDInputed.isNotEmpty()) {
 
                 // Get an instance of our collection
-                val userTransactions = db.collection("$currentUser")
-
+                //val userTransactions = db.collection("$currentUser")
+                val userTransactions = collectionReference
                 // Custom class is used to represent your document
                 // it is recommended to have a custom class to represent the data
                 val transaction = UserTransactions(
@@ -240,8 +241,8 @@ class HomeFragment : Fragment() {
                 userDescriptionInputedForSubtracted.isNotEmpty() && userTitleInputedForSubtracted.isNotEmpty() ) {
 
                 // Get an instance of our collection
-                val userTransactions = db.collection("$currentUser")
-
+                //val userTransactions = db.collection("$currentUser")
+                val userTransactions = collectionReference
                 // Custom class is used to represent your document
                 // it is recommended to have a custom class to represent the data
                 val transaction = UserTransactions(
@@ -318,7 +319,8 @@ class HomeFragment : Fragment() {
     private fun updateAllBalances() {
 
         // Get data using addOnSuccessListener
-        db.collection("$currentUser")
+        //db.collection("$currentUser")
+        collectionReference
             .orderBy("id")
             .get()
             .addOnSuccessListener { documents ->
