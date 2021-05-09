@@ -75,7 +75,8 @@
                 android:textAppearance="@style/TextAppearance.AppCompat.Medium"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="@+id/change"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent"
+                android:drawableLeft="@drawable/ic_baseline_open_in_browser_24"/>
 
             <TextView
                 android:id="@+id/change"
