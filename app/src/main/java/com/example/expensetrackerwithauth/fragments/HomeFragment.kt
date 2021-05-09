@@ -2,13 +2,13 @@ package com.example.expensetrackerwithauth.fragments
 
 import android.app.AlertDialog
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.expensetrackerwithauth.R
 import com.firebase.ui.firestore.FirestoreRecyclerOptions
@@ -18,18 +18,42 @@ import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObjects
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.delete_input_dialog.view.*
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_home.view.*
 import kotlinx.android.synthetic.main.income_input_dialog.view.*
+import kotlinx.android.synthetic.main.income_input_dialog.view.cancelButtonIncome
+import kotlinx.android.synthetic.main.income_input_dialog.view.dialogAmountInput
+import kotlinx.android.synthetic.main.income_input_dialog.view.saveButtonIncome
 
 
 class HomeFragment : Fragment() {
 
     // expandable button animations
-    private val rotateOpen: Animation by lazy { AnimationUtils.loadAnimation(activity, R.anim.rotate_open_anim) }
-    private val rotateClose: Animation by lazy { AnimationUtils.loadAnimation(activity, R.anim.rotate_close_anim) }
-    private val fromBottom: Animation by lazy { AnimationUtils.loadAnimation(activity, R.anim.from_bottom_anim) }
-    private val toBottom: Animation by lazy { AnimationUtils.loadAnimation(activity, R.anim.to_bottom_anim) }
+    private val rotateOpen: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            activity,
+            R.anim.rotate_open_anim
+        )
+    }
+    private val rotateClose: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            activity,
+            R.anim.rotate_close_anim
+        )
+    }
+    private val fromBottom: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            activity,
+            R.anim.from_bottom_anim
+        )
+    }
+    private val toBottom: Animation by lazy {
+        AnimationUtils.loadAnimation(
+            activity,
+            R.anim.to_bottom_anim
+        )
+    }
 
     // acts as an on / off switch
     private var clicked = false
@@ -40,10 +64,12 @@ class HomeFragment : Fragment() {
 
     val currentUser = FirebaseAuth.getInstance().currentUser.displayName
 
-    private val collectionReference:CollectionReference = db.collection("$currentUser")
+    private val collectionReference: CollectionReference = db.collection("$currentUser")
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
@@ -81,27 +107,64 @@ class HomeFragment : Fragment() {
             Toast.makeText(activity, "Subtract button Clicked", Toast.LENGTH_SHORT).show()
             showDialogSubtract()
         }
-        view.viewAllButton.setOnClickListener { view ->
-            viewAllDataButtonWithCustomClass()
-            updateAllBalances()
+        view.deleteTransactionButton.setOnClickListener { view ->
+            Toast.makeText(activity, "Delete button Clicked", Toast.LENGTH_SHORT).show()
+            showDialogDeleteTransaction()
         }
-
-
 
         setUpRecyclerview()
     }
 
     private fun setUpRecyclerview() {
 
-        val query : Query = collectionReference
-        val firestoreRecyclerOptions : FirestoreRecyclerOptions<UserTransactions> = FirestoreRecyclerOptions.Builder<UserTransactions>()
-            .setQuery(query, UserTransactions::class.java)
-            .build()
+        val query: Query = collectionReference
+        val firestoreRecyclerOptions: FirestoreRecyclerOptions<UserTransactions> =
+            FirestoreRecyclerOptions.Builder<UserTransactions>()
+                .setQuery(query, UserTransactions::class.java)
+                .build()
 
-            userAdapter = UserAdapter(firestoreRecyclerOptions)
+        userAdapter = UserAdapter(firestoreRecyclerOptions)
 
-            recycler_view.layoutManager = LinearLayoutManager(activity)
-            recycler_view.adapter = userAdapter
+        recycler_view.layoutManager = LinearLayoutManager(activity)
+        recycler_view.adapter = userAdapter
+    }
+
+
+
+    // Delete a contact based on its id
+    private fun deleteButton(userEnteredTransactionForDeletion: Int) {
+
+        // get the id from the user
+        val usEnteredId = userEnteredTransactionForDeletion.toString()
+
+        if (usEnteredId.isNotEmpty()) {
+
+            // To delete the contact based on id, we first execute a query to get a reference to
+            // document to be deleted, then loop over matching documents and finally delete each
+            // document based on its reference
+            collectionReference
+                .whereEqualTo("id", usEnteredId.toInt())
+                .get()
+                .addOnSuccessListener {documents->
+
+                    for (document in documents) {
+                        if (document != null) {
+                            //Log.d(TAG, "${document.id} => ${document.data}")
+                            // delete the document
+                            document.reference.delete()
+
+                            //clearEditTexts()
+                            //showToast("Contact has been deleted.")
+                            // Assuming there is only one document we want to delete so break the loop
+                            break
+                        } else {
+                            //Log.d(TAG, "No such document")
+                        }
+                    }
+                }
+        } else {
+            //showToast("Enter an id")
+        }
     }
 
 
@@ -120,8 +183,8 @@ class HomeFragment : Fragment() {
         val mDialogView = LayoutInflater.from(activity).inflate(R.layout.income_input_dialog, null)
 
         val mBuilder = AlertDialog.Builder(activity)
-                .setView(mDialogView)
-                .setTitle("Add Income")
+            .setView(mDialogView)
+            .setTitle("Add Income")
         // show dialog
         val mAlertDialog = mBuilder.show()
         // save button of custom layout
@@ -130,8 +193,9 @@ class HomeFragment : Fragment() {
             mAlertDialog.dismiss()
             // get text from EditTexts of custom layout
             val userIncomeInputed = mDialogView.dialogAmountInput.text.toString().toInt()
-            val userTypeInputed = mDialogView.dialogTypeInput.text.toString()
-            val userNoteInputed = mDialogView.dialogNoteInput.text.toString()
+            val userTypeInputed = mDialogView.dialogTitleInput.text.toString()
+            val userNoteInputed = mDialogView.dialogDescriptionInput.text.toString()
+            val userIDInputed = mDialogView.dialogIDInput.text.toString().toInt()
 
             val currentUser = FirebaseAuth.getInstance().currentUser.displayName
 
@@ -144,7 +208,7 @@ class HomeFragment : Fragment() {
             // Custom class is used to represent your document
             // it is recommended to have a custom class to represent the data
             val transaction = UserTransactions(
-                id = 1,
+                id = userIDInputed,
                 addedBalance = true,
                 subtractedBalance = false,
                 userBalance = userIncomeInputed,
@@ -172,8 +236,8 @@ class HomeFragment : Fragment() {
         val mDialogView = LayoutInflater.from(activity).inflate(R.layout.income_input_dialog, null)
 
         val mBuilder = AlertDialog.Builder(activity)
-                .setView(mDialogView)
-                .setTitle("Subtract Income")
+            .setView(mDialogView)
+            .setTitle("Subtract Income")
         // show dialog
         val mAlertDialog = mBuilder.show()
         // save button of custom layout
@@ -182,8 +246,9 @@ class HomeFragment : Fragment() {
             mAlertDialog.dismiss()
             // get text from EditTexts of custom layout
             val userIncomeForSubtracted = mDialogView.dialogAmountInput.text.toString().toInt()
-            val userTypeInputedForSubtracted = mDialogView.dialogTypeInput.text.toString()
-            val userNoteInputedForSubtracted = mDialogView.dialogNoteInput.text.toString()
+            val userTypeInputedForSubtracted = mDialogView.dialogTitleInput.text.toString()
+            val userNoteInputedForSubtracted = mDialogView.dialogDescriptionInput.text.toString()
+            val userIDInputed = mDialogView.dialogIDInput.text.toString().toInt()
 
             // do something with the data
             val currentUser = FirebaseAuth.getInstance().currentUser.displayName
@@ -194,7 +259,7 @@ class HomeFragment : Fragment() {
             // Custom class is used to represent your document
             // it is recommended to have a custom class to represent the data
             val transaction = UserTransactions(
-                id = 1,
+                id = userIDInputed,
                 addedBalance = false,
                 subtractedBalance = true,
                 userBalance = userIncomeForSubtracted,
@@ -216,51 +281,37 @@ class HomeFragment : Fragment() {
         }
     }
 
+    private fun showDialogDeleteTransaction() {
+        // inflate the dialog with custom view
+        val mDialogView = LayoutInflater.from(activity).inflate(R.layout.delete_input_dialog, null)
 
-    // Alternative-2 --> Uses custom objects (i.e., Contact data class)
-    // Read all the records from the database
-    private fun viewAllDataButtonWithCustomClass() {
+        val mBuilder = AlertDialog.Builder(activity)
+            .setView(mDialogView)
+            .setTitle("Delete a Transaction")
+        // show dialog
+        val mAlertDialog = mBuilder.show()
+        // save button of custom layout
+        mDialogView.saveButtonIncome.setOnClickListener {
+            // dissmiss dialog
+            mAlertDialog.dismiss()
+            // get text from EditTexts of custom layout
+            val userEnteredTransactionForDeletion = mDialogView.dialogDeleteInput.text.toString().toInt()
 
-        val currentUser = FirebaseAuth.getInstance().currentUser.displayName
-
-
-        // Get data using addOnSuccessListener
-        db.collection("$currentUser")
-            .orderBy("id")
-            .get()
-            .addOnSuccessListener { documents ->
-
-                val buffer = StringBuffer()
-
-                // Turn your document(s) to Contact object
-                val userTransactionsObject = documents.toObjects<UserTransactions>()
-
-                for (userTransactions in userTransactionsObject) {
-
-                    //Log.d(TAG, "contact: ${contact}")
-
-                    // Create a string buffer (i.e., concatenate all the fields into one string)
-                    buffer.append("ID : ${userTransactions.id}" + "\n")
-                    buffer.append("added Balance : ${userTransactions.addedBalance}" + "\n")
-                    buffer.append("subtracted Balance :  ${userTransactions.subtractedBalance}" + "\n")
-                    buffer.append("user Balance : ${userTransactions.userBalance}" + "\n")
-                    buffer.append("user Note :  ${userTransactions.userNote}" + "\n")
-                    buffer.append("user Type :  ${userTransactions.userType}" + "\n\n")
-                }
-
-                // show all the records as a string in a dialog
-                showDialog("Data Listing", buffer.toString())
-            }
-            .addOnFailureListener {
-                //Log.d(TAG, "Error getting documents")
-                //showDialog("Error", "Error getting documents")
-            }
+            // calls the delete method`
+            deleteButton(userEnteredTransactionForDeletion)
+        }
+        // cancel button
+        mDialogView.cancelButtonIncome.setOnClickListener {
+            // dismiss dialog
+            mAlertDialog.dismiss()
+        }
     }
+
 
     /**
      * show an alert dialog with data dialog.
      */
-    private fun showDialog(title : String,Message : String){
+    private fun showDialog(title: String, Message: String) {
         val builder = AlertDialog.Builder(activity)
         builder.setCancelable(true)
         builder.setTitle(title)
@@ -323,9 +374,11 @@ class HomeFragment : Fragment() {
         if (!clicked) {
             addButton.visibility = View.VISIBLE
             subtractButton.visibility = View.VISIBLE
+            deleteTransactionButton.visibility = View.VISIBLE
         } else {
             addButton.visibility = View.INVISIBLE
             subtractButton.visibility = View.INVISIBLE
+            deleteTransactionButton.visibility = View.INVISIBLE
         }
     }
 
@@ -333,10 +386,12 @@ class HomeFragment : Fragment() {
         if (!clicked) {
             addButton.startAnimation(fromBottom)
             subtractButton.startAnimation(fromBottom)
+            deleteTransactionButton.startAnimation(fromBottom)
             fab.startAnimation(rotateOpen)
         } else {
             addButton.startAnimation(toBottom)
             subtractButton.startAnimation(toBottom)
+            deleteTransactionButton.startAnimation(toBottom)
             fab.startAnimation(rotateClose)
         }
     }
@@ -346,9 +401,11 @@ class HomeFragment : Fragment() {
         if (!clicked) {
             addButton.isClickable = true
             subtractButton.isClickable = true
+            deleteTransactionButton.isClickable = true
         } else {
             addButton.isClickable = false
             subtractButton.isClickable = false
+            deleteTransactionButton.isClickable = false
         }
     }
 }

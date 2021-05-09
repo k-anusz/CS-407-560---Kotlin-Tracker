@@ -55,6 +55,23 @@
             app:layout_constraintVertical_bias="0.653" />
 
         <TextView
+            android:id="@+id/single_ID"
+            android:layout_width="130dp"
+            android:layout_height="27dp"
+            android:layout_marginLeft="319dp"
+            android:layout_marginTop="35dp"
+            android:text="ID:"
+            android:textAlignment="viewStart"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.068"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.653" />
+
+        <TextView
             android:id="@+id/single_type_Amount"
             android:layout_width="220dp"
             android:layout_height="31dp"

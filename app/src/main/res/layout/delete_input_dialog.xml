@@ -8,33 +8,12 @@
 
 
     <EditText
-        android:id="@+id/dialogAmountInput"
+        android:id="@+id/dialogDeleteInput"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="10dp"
-        android:hint="Amount"
-        android:padding="10dp"/>
-
-    <EditText
-        android:id="@+id/dialogTitleInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="Title" />
-
-    <EditText
-        android:id="@+id/dialogDescriptionInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="Description" />
-
-    <EditText
-        android:id="@+id/dialogIDInput"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:hint="ID: (Used for identifying transactions)" />
+        android:hint="ID"
+        android:padding="10dp" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

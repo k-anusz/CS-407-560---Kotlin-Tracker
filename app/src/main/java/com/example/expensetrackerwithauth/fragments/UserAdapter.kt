@@ -38,14 +38,15 @@ class UserAdapter(options: FirestoreRecyclerOptions<UserTransactions>) :
         }
         holder.singleNoteAmount.text = model.userNote
         holder.singleTypeAmount.text = model.userType
+        holder.transactionID.text = "ID: " + model.id.toString()
     }
 
     class UserAdapterVH(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var singleItemAmount = itemView.single_item_Amount
         var singleNoteAmount = itemView.single_note_Amount
         var singleTypeAmount = itemView.single_type_Amount
+        var transactionID = itemView.single_ID
         var mCardView = itemView.cardview
-
     }
 }
 
