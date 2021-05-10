@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import androidx.fragment.app.Fragment
@@ -11,13 +12,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.example.expensetrackerwithauth.R
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.android.synthetic.main.fragment_settings.*
+import java.io.ByteArrayOutputStream
+import java.io.File
 import java.util.jar.Manifest
 
 
@@ -27,6 +36,13 @@ class SettingsFragment : Fragment() {
         private const val CAMERA_PERMISSION_CODE = 1
         private const val CAMERA_REQUEST_CODE = 2
     }
+
+    // stores the Uri of our profile picture that is uploaded into firebase storage
+    private lateinit var imageUri : Uri
+
+    private val currentDisplayName = FirebaseAuth.getInstance().currentUser.displayName
+    // storageRef where we will put our image
+    val storageRef = FirebaseStorage.getInstance().reference.child("users/$currentDisplayName/profile.png")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -57,6 +73,7 @@ class SettingsFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == CAMERA_PERMISSION_CODE) {
             if(grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // opens the camera application
                 val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
                 startActivityForResult(intent, CAMERA_REQUEST_CODE)
             }
@@ -71,8 +88,51 @@ class SettingsFragment : Fragment() {
         if(resultCode == Activity.RESULT_OK) {
             if(requestCode == CAMERA_REQUEST_CODE) {
                 val thumbNail: Bitmap = data!!.extras!!.get("data") as Bitmap
-                profile_imageView.setImageBitmap(thumbNail)
+                uploadImageAndSaveUri(thumbNail)
             }
+        }
+    }
+
+    private fun uploadImageAndSaveUri(thumbNail: Bitmap) {
+        val baos = ByteArrayOutputStream()
+        thumbNail.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val image = baos.toByteArray()
+
+        val upload = storageRef.putBytes(image)
+
+        progressBar_pic.visibility = View.VISIBLE
+        upload.addOnCompleteListener{uploadTask ->
+            progressBar_pic.visibility = View.INVISIBLE
+            if(uploadTask.isSuccessful){
+                storageRef.downloadUrl.addOnCompleteListener{urlTask ->
+                    urlTask.result?.let{
+                        imageUri = it
+                        downloadAndDisplayProfileImage()
+                    }
+                }
+            }else{
+                uploadTask.exception?.let{
+                    // displays a toast message in case of an error
+                    showToast(it.message!!)
+                }
+            }
+        }
+    }
+
+    private fun downloadAndDisplayProfileImage() {
+        val localFile = File.createTempFile("images", "jpg")
+
+        storageRef.getFile(localFile).addOnSuccessListener {
+            // Local temp file has been created
+            activity?.let {
+                Glide.with(it)
+                    .load(localFile)
+                    .placeholder(R.drawable.ic_baseline_person_24)
+                    .circleCrop()
+                    .into(profile_imageView)
+            }
+        }.addOnFailureListener {
+            // Handle any errors
         }
     }
 
@@ -83,21 +143,19 @@ class SettingsFragment : Fragment() {
         val currentUser = FirebaseAuth.getInstance().currentUser
 
         // Show details
-
         activity?.let {
             person_name.text = currentUser.displayName
             person_email.text = currentUser.email
-//            Glide.with(it)
-//                .load(currentUser.photoUrl)
-//                .placeholder(R.drawable.ic_baseline_person_24)
-//                .circleCrop()
-//                .into(profile_imageView.set)
+            downloadAndDisplayProfileImage()
         }
     }
+
+    /**
+     * A helper function to show Toast message
+     */
+    private fun showToast(text: String){
+        Toast.makeText(activity, text, Toast.LENGTH_SHORT).show()
+    }
 }
-
-
-
-
 
 

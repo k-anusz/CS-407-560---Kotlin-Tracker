@@ -99,6 +99,18 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.37" />
 
+        <ProgressBar
+            android:id="@+id/progressBar_pic"
+            style="?android:attr/progressBarStyle"
+            android:visibility="invisible"
+            android:layout_width="151dp"
+            android:layout_height="149dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.116" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </FrameLayout>
