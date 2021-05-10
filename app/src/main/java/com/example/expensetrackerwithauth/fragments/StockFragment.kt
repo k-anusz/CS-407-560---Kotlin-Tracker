@@ -63,15 +63,58 @@ class StockFragment : Fragment() {
         val dividerItemDecoration = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
         stock_portfolio.addItemDecoration(dividerItemDecoration)
 
+
+        //Update stockList with stock from Firebase, but first get the most recent values
         if(stockList.isEmpty()) {
             collectionReference
                 .get()
                 .addOnSuccessListener { documents ->
+                    val retrofit = Retrofit.Builder()
+                        .baseUrl(BASE_URL)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                    val StockAPI = retrofit.create(StockService::class.java)
                     for (document in documents) {
                         val stock = document.toObject<Stock>()
-                        stockList.add(stock)
+
+                        // Using enqueue method allows to make asynchronous call without blocking/freezing main thread
+                        StockAPI.getStock("${FUNCTION}", "${stock.symbol}", "$API_KEY")
+                            .enqueue(object :
+                                Callback<StockData> {
+
+                                override fun onFailure(call: Call<StockData>, t: Throwable) {
+                                    Log.d(TAG, "onFailure : $t")
+
+                                    // In case the request fails
+                                    collectionReference.document("${stock.symbol}").set(stock)
+                                    // Update the adapter with the old data that firebase had saved
+                                    stockList.add(stock)
+                                    adapter.notifyDataSetChanged()
+                                }
+                                override fun onResponse(
+                                    call: Call<StockData>,
+                                    response: Response<StockData>
+                                ) {
+                                    Log.d(TAG, "onResponse: $response")
+                                    val body = response.body()
+
+                                    val stock = Stock(
+                                        symbol = body!!.Stock.symbol,
+                                        open = body!!.Stock.open,
+                                        high = body!!.Stock.high,
+                                        low = body!!.Stock.low,
+                                        price = body!!.Stock.price,
+                                        change = body!!.Stock.change
+                                    )
+                                    // Add data
+                                    collectionReference.document("${body!!.Stock.symbol}").set(stock)
+                                    // Update the adapter with the new data
+                                    stockList.add(body!!.Stock)
+                                    adapter.notifyDataSetChanged()
+                                }
+                            })
                     }
-                    adapter.notifyDataSetChanged()
+
                 }
         }
 
