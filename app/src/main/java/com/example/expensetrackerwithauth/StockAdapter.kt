@@ -32,12 +32,12 @@ class StockAdapter(private val stocks: ArrayList<Stock>) : RecyclerView.Adapter<
         val stock = stocks[position]
 
         holder.symbol.text = "${stock.symbol}"
-        holder.open.text = "${number2digits(stock.open)}"
-        holder.high.text =  "${number2digits(stock.high)}"
-        holder.low.text =  "${number2digits(stock.low)}"
-        holder.price.text =  "${number2digits(stock.price)}"
+        holder.open.text = "${number2digits(stock.open!!)}"
+        holder.high.text =  "${number2digits(stock.high!!)}"
+        holder.low.text =  "${number2digits(stock.low!!)}"
+        holder.price.text =  "${number2digits(stock.price!!)}"
         holder.change.text = "${stock.change}"
-        if (stock.change.contains('-'))
+        if (stock.change!!.contains('-'))
         {
             holder.change.setTextColor(Color.parseColor(("#FF0000")))
         }

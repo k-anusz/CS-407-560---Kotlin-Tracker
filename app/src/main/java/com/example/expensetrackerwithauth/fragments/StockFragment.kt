@@ -21,6 +21,13 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.expensetrackerwithauth.*
+import com.firebase.ui.firestore.FirestoreRecyclerOptions
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_home.*
 import kotlinx.android.synthetic.main.fragment_stock.*
 import retrofit2.Call
@@ -43,6 +50,11 @@ class StockFragment : Fragment() {
     private var swipeBackground: ColorDrawable = ColorDrawable(Color.parseColor("#FF0000"))
     private lateinit var deleteIcon: Drawable
 
+    private val db = Firebase.firestore
+    private val currentUID = FirebaseAuth.getInstance().currentUser.uid
+    private val collectionReference: CollectionReference = db.collection("$currentUID stocks")
+
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
@@ -50,6 +62,18 @@ class StockFragment : Fragment() {
         stock_portfolio.layoutManager = LinearLayoutManager(this.context)
         val dividerItemDecoration = DividerItemDecoration(this.context, DividerItemDecoration.VERTICAL)
         stock_portfolio.addItemDecoration(dividerItemDecoration)
+
+        if(stockList.isEmpty()) {
+            collectionReference
+                .get()
+                .addOnSuccessListener { documents ->
+                    for (document in documents) {
+                        val stock = document.toObject<Stock>()
+                        stockList.add(stock)
+                    }
+                    adapter.notifyDataSetChanged()
+                }
+        }
 
         deleteIcon = ContextCompat.getDrawable(this.requireContext(), R.drawable.ic_baseline_delete_24)!!
 
@@ -63,6 +87,15 @@ class StockFragment : Fragment() {
             }
 
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, position: Int) {
+
+                var stock2BeDeleted = stockList.get(viewHolder.adapterPosition)
+                collectionReference.document("${stock2BeDeleted.symbol}")
+                    .delete()
+                    .addOnSuccessListener {
+                        Log.d(TAG, "DocumentSnapshot successfully deleted!") }
+                    .addOnFailureListener { e ->
+                        Log.w(TAG, "Error deleting document", e)
+                    }
                 (adapter as StockAdapter).removeItem(viewHolder)
             }
 
@@ -127,12 +160,9 @@ class StockFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_stock, container, false)
 
-        //stock_portfolio.adapter = adapter
-        //stock_portfolio.layoutManager = LinearLayoutManager(this.context)
 
         val symbol_input = view.findViewById<EditText>(R.id.symbol_input)
         val add_stock_button= view.findViewById(R.id.add_stock_button) as Button
-
 
         add_stock_button.setOnClickListener() {
             if (symbol_input.text.isEmpty()) {
@@ -152,7 +182,6 @@ class StockFragment : Fragment() {
             } else {
 
                 symbol_input.hideKeyboard()
-
 
                 val retrofit = Retrofit.Builder()
                     .baseUrl(BASE_URL)
@@ -194,6 +223,19 @@ class StockFragment : Fragment() {
                                 return
                             }
                         }
+
+                        val stock = Stock(
+                            symbol = body!!.Stock.symbol,
+                            open = body!!.Stock.open,
+                            high = body!!.Stock.high,
+                            low = body!!.Stock.low,
+                            price = body!!.Stock.price,
+                            change = body!!.Stock.change
+                        )
+
+                        // Add data
+                        collectionReference.document("${body!!.Stock.symbol}").set(stock)
+
                         // Update the adapter with the new data
                         stockList.add(body!!.Stock)
                         adapter.notifyDataSetChanged()
