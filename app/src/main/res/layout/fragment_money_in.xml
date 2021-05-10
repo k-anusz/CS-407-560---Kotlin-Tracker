@@ -10,6 +10,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="50dp"
+            android:layout_marginEnd="107dp"
+            android:text="Money in"
+            android:textAlignment="center"
+            android:textColor="#4CAF50"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_view_money_in"
             android:layout_width="wrap_content"
@@ -18,22 +31,22 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="128dp"
-            android:layout_marginBottom="41dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginBottom="300dp"
             tools:listitem="@layout/single_transaction" />
 
-        <TextView
-            android:layout_width="200dp"
-            android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="93dp"
-            android:layout_marginEnd="107dp"
-            android:text="Money in"
-            android:textAlignment="center"
-            android:textColor="#4CAF50"
-            android:textSize="24sp"
-            android:textStyle="bold" />
+        <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+            android:id="@+id/aa_chart_view"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="5dp">
+
+        </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
 
     </RelativeLayout>
 

@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:layout_marginTop="94dp"
+            android:layout_marginTop="50dp"
             android:layout_marginEnd="107dp"
             android:text="Money out"
             android:textAlignment="center"
@@ -31,9 +31,23 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentBottom="true"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="128dp"
-            android:layout_marginBottom="41dp"
+            android:layout_marginTop="75dp"
+            android:layout_marginBottom="300dp"
             tools:listitem="@layout/single_transaction" />
+
+        <com.github.aachartmodel.aainfographics.aachartcreator.AAChartView
+            android:id="@+id/aa_chart_view2"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_marginStart="0dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginTop="300dp"
+            android:layout_marginEnd="0dp"
+            android:layout_marginRight="0dp"
+            android:layout_marginBottom="5dp">
+
+        </com.github.aachartmodel.aainfographics.aachartcreator.AAChartView>
+
     </RelativeLayout>
 
 </FrameLayout>

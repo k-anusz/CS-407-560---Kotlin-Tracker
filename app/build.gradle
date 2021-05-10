@@ -36,6 +36,9 @@ android {
 
 dependencies {
 
+    // AAChartCore-Kotlin
+    implementation 'com.github.AAChartModel:AAChartCore-Kotlin:-SNAPSHOT'
+
     // Retrofit
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
